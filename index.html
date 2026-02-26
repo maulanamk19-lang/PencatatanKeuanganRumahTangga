@@ -6,117 +6,113 @@
     <title>Smart Finance - Maul & Ninda</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); }
-        .dark .glass { background: rgba(30, 41, 59, 0.8); }
-        .chart-container { position: relative; height: 250px; width: 100%; }
+        .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); }
+        .dark .glass { background: rgba(30, 41, 59, 0.85); }
+        .custom-scroll::-webkit-scrollbar { width: 5px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     </style>
 </head>
 <body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen transition-colors duration-300">
 
 <div id="loginPage" class="flex items-center justify-center h-screen px-4">
-    <div class="glass p-8 rounded-3xl shadow-2xl w-full max-w-md border border-white/20">
+    <div class="glass p-8 rounded-[2rem] shadow-2xl w-full max-w-md border border-white/20">
         <div class="text-center mb-8">
-            <h2 class="text-3xl font-bold">Welcome Back</h2>
-            <p class="text-slate-500 dark:text-slate-400">Silakan login untuk akses Smart Finance</p>
+            <h2 class="text-3xl font-bold">Smart Finance</h2>
+            <p class="text-slate-500 text-sm mt-1">Maul & Ninda Financial Hub</p>
         </div>
-        <select id="userSelect" class="w-full p-4 rounded-xl mb-4 bg-white dark:bg-slate-800 border-none shadow-inner text-black dark:text-white">
+        <select id="userSelect" class="w-full p-4 rounded-2xl mb-4 bg-white dark:bg-slate-800 border-none shadow-sm text-black dark:text-white">
             <option value="Maul">Maul</option>
             <option value="Ninda">Ninda</option>
         </select>
-        <input type="password" id="pinInput" placeholder="Masukkan PIN" class="w-full p-4 rounded-xl mb-6 bg-white dark:bg-slate-800 border-none shadow-inner text-black dark:text-white text-center tracking-[1em]">
-        <button onclick="login()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition shadow-lg shadow-blue-500/30">Masuk ke Dashboard</button>
+        <input type="password" id="pinInput" placeholder="PIN" class="w-full p-4 rounded-2xl mb-6 bg-white dark:bg-slate-800 border-none shadow-sm text-black dark:text-white text-center tracking-[0.5em]">
+        <button onclick="login()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-2xl transition shadow-lg shadow-blue-500/30">Masuk</button>
     </div>
 </div>
 
 <div id="appPage" class="hidden max-w-6xl mx-auto p-4 md:p-8">
     <div class="flex justify-between items-center mb-8">
         <div>
-            <h1 class="text-2xl font-bold opacity-80">Smart Finance</h1>
-            <p id="userNameDisplay" class="text-blue-600 font-semibold"></p>
+            <h1 class="text-2xl font-bold opacity-80">Dashboard</h1>
+            <p id="userNameDisplay" class="text-blue-600 font-semibold text-sm"></p>
         </div>
-        <div class="flex gap-3">
+        <div class="flex gap-2">
             <button onclick="toggleDark()" class="p-3 glass rounded-xl shadow-sm">🌙</button>
-            <button onclick="logout()" class="p-3 bg-red-50 text-red-600 font-bold rounded-xl hover:bg-red-100 transition">Logout</button>
+            <button onclick="logout()" class="p-3 bg-red-50 text-red-600 font-bold rounded-xl text-xs uppercase tracking-wider">Logout</button>
         </div>
     </div>
 
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <div class="bg-gradient-to-br from-rose-500 to-red-600 text-white p-5 rounded-3xl shadow-lg">
-            <div class="text-xs opacity-80 mb-1">Pengeluaran</div>
-            <div id="totalOut" class="text-xl font-bold">0</div>
+        <div class="bg-gradient-to-br from-rose-500 to-red-600 text-white p-5 rounded-[1.5rem] shadow-lg">
+            <div class="text-[10px] uppercase font-bold opacity-70 mb-1">Pengeluaran</div>
+            <div id="totalOut" class="text-xl font-bold">Rp 0</div>
         </div>
-        <div class="bg-gradient-to-br from-emerald-500 to-teal-600 text-white p-5 rounded-3xl shadow-lg">
-            <div class="text-xs opacity-80 mb-1">Pemasukan</div>
-            <div id="totalIn" class="text-xl font-bold">0</div>
+        <div class="bg-gradient-to-br from-emerald-500 to-teal-600 text-white p-5 rounded-[1.5rem] shadow-lg">
+            <div class="text-[10px] uppercase font-bold opacity-70 mb-1">Pemasukan</div>
+            <div id="totalIn" class="text-xl font-bold">Rp 0</div>
         </div>
-        <div class="glass p-5 rounded-3xl border border-white/20 shadow-sm">
-            <div class="text-xs text-slate-500 mb-1">Prediksi Pengeluaran</div>
-            <div id="prediksi" class="text-xl font-bold text-blue-600">0</div>
+        <div class="glass p-5 rounded-[1.5rem] border border-white/20">
+            <div class="text-[10px] uppercase font-bold text-slate-400 mb-1">Prediksi 3 Bln</div>
+            <div id="prediksi" class="text-xl font-bold text-blue-600">Rp 0</div>
         </div>
-        <div class="glass p-5 rounded-3xl border border-white/20 shadow-sm">
-            <div class="text-xs text-slate-500 mb-1">Dana Darurat (12x)</div>
-            <div id="danaDarurat" class="text-xl font-bold text-purple-600">0</div>
+        <div class="glass p-5 rounded-[1.5rem] border border-white/20">
+            <div class="text-[10px] uppercase font-bold text-slate-400 mb-1">Dana Darurat</div>
+            <div id="danaDarurat" class="text-xl font-bold text-purple-600">Rp 0</div>
         </div>
     </div>
 
     <div class="grid lg:grid-cols-3 gap-8">
-        <div class="lg:col-span-1 space-y-6">
-            <div class="glass p-6 rounded-3xl shadow-sm border border-white/20">
-                <h3 class="font-bold mb-4 flex items-center gap-2">✨ Tambah Transaksi</h3>
-                <div class="space-y-4">
+        <div class="space-y-6">
+            <div class="glass p-6 rounded-[2rem] shadow-sm border border-white/20">
+                <h3 class="font-bold mb-4 flex items-center gap-2">📝 Transaksi Baru</h3>
+                <div class="space-y-3">
                     <select id="tipe" class="w-full p-3 rounded-xl bg-slate-100 dark:bg-slate-700 border-none text-sm text-black dark:text-white">
                         <option value="Pengeluaran">🔴 Pengeluaran</option>
                         <option value="Pemasukan">🟢 Pemasukan</option>
                     </select>
                     <input type="date" id="tanggal" class="w-full p-3 rounded-xl bg-slate-100 dark:bg-slate-700 border-none text-sm text-black dark:text-white">
+                    <select id="category" class="w-full p-3 rounded-xl bg-slate-100 dark:bg-slate-700 border-none text-sm text-black dark:text-white" required>
+                        <option value="">Pilih Kategori</option>
+                        <option value="🏠 Rumah">🏠 Rumah</option>
+                        <option value="🍚 Makan">🍚 Makan</option>
+                        <option value="🚗 Transport">🚗 Transport</option>
+                        <option value="🎓 Pendidikan">🎓 Pendidikan</option>
+                        <option value="🏥 Kesehatan">🏥 Kesehatan</option>
+                        <option value="🛍 Belanja">🛍 Belanja</option>
+                        <option value="🎉 Hiburan">🎉 Hiburan</option>
+                        <option value="✨ Sedekah">✨ Sedekah</option>
+                        <option value="📦 Lainnya">📦 Lainnya</option>
+                    </select>
                     <input type="text" id="keterangan" placeholder="Keterangan" class="w-full p-3 rounded-xl bg-slate-100 dark:bg-slate-700 border-none text-sm text-black dark:text-white">
-                    <input type="number" id="jumlah" placeholder="Jumlah (Rp)" class="w-full p-3 rounded-xl bg-slate-100 dark:bg-slate-700 border-none text-sm text-black dark:text-white">
-                    <button id="btnSimpan" onclick="tambahTransaksi()" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl shadow-md hover:bg-blue-700 transition active:scale-95">Simpan Data</button>
+                    <input type="number" id="jumlah" placeholder="Jumlah" class="w-full p-3 rounded-xl bg-slate-100 dark:bg-slate-700 border-none text-sm text-black dark:text-white">
+                    <button id="btnSimpan" onclick="tambahTransaksi()" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl shadow-md hover:bg-blue-700 active:scale-95 transition">Simpan</button>
                 </div>
             </div>
-            
-            <div class="glass p-6 rounded-3xl shadow-sm border border-white/20">
-                <h3 class="font-bold mb-4 text-sm">Cepat: Export Data</h3>
-                <button onclick="exportPDF()" class="w-full bg-slate-800 text-white p-3 rounded-xl text-sm font-semibold hover:bg-black transition">Download Laporan PDF</button>
-            </div>
+            <button onclick="exportPDF()" class="w-full glass p-4 rounded-2xl text-sm font-bold border border-white/20 hover:bg-white transition">📄 Download PDF</button>
         </div>
 
         <div class="lg:col-span-2 space-y-8">
             <div class="grid md:grid-cols-2 gap-6">
-                <div class="glass p-6 rounded-3xl border border-white/20 shadow-sm">
-                    <h4 class="text-sm font-bold mb-4">Proporsi Kategori</h4>
-                    <div class="chart-container"><canvas id="chartKategori"></canvas></div>
-                </div>
-                <div class="glass p-6 rounded-3xl border border-white/20 shadow-sm">
-                    <h4 class="text-sm font-bold mb-4">Cash Flow</h4>
-                    <div class="chart-container"><canvas id="chartVs"></canvas></div>
-                </div>
+                <div class="glass p-6 rounded-[2rem] border border-white/20"><canvas id="chartKategori"></canvas></div>
+                <div class="glass p-6 rounded-[2rem] border border-white/20"><canvas id="chartVs"></canvas></div>
             </div>
-
-            <div class="glass p-6 rounded-3xl border border-white/20 shadow-sm">
-                <h4 class="text-sm font-bold mb-4">Trend Pengeluaran Bulanan</h4>
-                <div class="h-64 w-full"><canvas id="trendChart"></canvas></div>
-            </div>
-
-            <div class="glass p-6 rounded-3xl border border-white/20 shadow-sm">
-                <h4 class="font-bold mb-4">Riwayat Transaksi</h4>
-                <div id="riwayat" class="space-y-4 max-h-96 overflow-y-auto pr-2 custom-scroll">
-                    </div>
+            <div class="glass p-6 rounded-[2rem] border border-white/20"><canvas id="trendChart"></canvas></div>
+            <div class="glass p-6 rounded-[2rem] border border-white/20">
+                <h4 class="font-bold mb-4">Riwayat</h4>
+                <div id="riwayat" class="space-y-3 max-h-96 overflow-y-auto pr-2 custom-scroll"></div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-// URL WEB APP ANDA
 const URL = "https://script.google.com/macros/s/AKfycbw5MNn27Fopx3dp7H5nKcGmqK4xDTzS2m53JVEhKzfzn9GPHxuFtgRXClFsHLtgGVug/exec";
 let currentUser = "";
 let chart1, chart2, chart3;
 
-// Gunakan Hash PIN yang sama
 const PIN_HASH = {
     "Maul": "41c991eb6a66242c0454191244278183ce58cf4a6bcd372f799e4b9cc01886af",
     "Ninda": "d54123de468bd42ea00dafbd777f85fe5fa1ff6404d9838c007953c25c92a1c5"
@@ -142,44 +138,25 @@ async function sha256(text) {
 }
 
 async function login() {
-    const user = userSelect.value;
-    const pin = pinInput.value;
-    const hash = await sha256(pin);
-    if(hash === PIN_HASH[user]) {
-        currentUser = user;
-        localStorage.setItem("bk_user", user);
+    const hash = await sha256(pinInput.value);
+    if(hash === PIN_HASH[userSelect.value]) {
+        currentUser = userSelect.value;
+        localStorage.setItem("bk_user", currentUser);
         location.reload();
     } else alert("PIN Salah!");
 }
 
-function logout() {
-    localStorage.removeItem("bk_user");
-    location.reload();
-}
-
+function logout() { localStorage.removeItem("bk_user"); location.reload(); }
 function toggleDark() { document.body.classList.toggle("dark"); }
 
-function autoKategori(desc) {
-    desc = desc.toLowerCase();
-    if(desc.includes("makan") || desc.includes("kopi") || desc.includes("jajan")) return "Makan";
-    if(desc.includes("bensin") || desc.includes("tol") || desc.includes("parkir")) return "Transport";
-    if(desc.includes("listrik") || desc.includes("air") || desc.includes("wifi")) return "Tagihan";
-    if(desc.includes("gaji") || desc.includes("bonus")) return "Gaji";
-    if(desc.includes("sedekah") || desc.includes("zakat")) return "Sedekah";
-    return "Lainnya";
-}
-
 async function tambahTransaksi() {
-    const btn = document.getElementById('btnSimpan');
-    const ketVal = document.getElementById('keterangan').value;
-    const jmlVal = document.getElementById('jumlah').value;
-    
-    if(!ketVal || !jmlVal) return alert("Isi semua data!");
-    
-    btn.disabled = true;
-    btn.innerText = "Menyimpan...";
-    
-    let kategori = autoKategori(ketVal);
+    const cat = category.value;
+    const desc = keterangan.value;
+    const amt = jumlah.value;
+    if(!cat || !desc || !amt) return alert("Lengkapi data!");
+
+    btnSimpan.disabled = true;
+    btnSimpan.innerText = "Saving...";
 
     try {
         await fetch(URL, {
@@ -187,40 +164,29 @@ async function tambahTransaksi() {
             body: JSON.stringify({
                 action: "add",
                 user: currentUser,
-                tipe: document.getElementById('tipe').value,
-                date: document.getElementById('tanggal').value,
-                category: kategori,
-                description: ketVal,
-                amount: jmlVal
+                tipe: tipe.value,
+                date: tanggal.value,
+                category: cat,
+                description: desc,
+                amount: amt
             })
         });
-        document.getElementById('keterangan').value = "";
-        document.getElementById('jumlah').value = "";
+        keterangan.value = ""; jumlah.value = ""; category.value = "";
         loadData();
-    } catch(e) { alert("Gagal Simpan"); }
-    finally {
-        btn.disabled = false;
-        btn.innerText = "Simpan Data";
-    }
+    } catch(e) { alert("Error!"); }
+    finally { btnSimpan.disabled = false; btnSimpan.innerText = "Simpan"; }
 }
 
 async function hapusTransaksi(id) {
-    if(!confirm("Hapus data ini?")) return;
-    try {
-        await fetch(URL, {
-            method: "POST",
-            body: JSON.stringify({ action: "delete", id: id })
-        });
-        loadData();
-    } catch(e) { alert("Gagal Hapus"); }
+    if(!confirm("Hapus?")) return;
+    await fetch(URL, { method: "POST", body: JSON.stringify({ action: "delete", id: id }) });
+    loadData();
 }
 
 function loadData() {
-    fetch(URL)
-    .then(r => r.json())
-    .then(data => {
-        const transaksi = data.transaksi.filter(t => t.user === currentUser);
-        render(transaksi);
+    fetch(URL).then(r => r.json()).then(data => {
+        const tr = data.transaksi.filter(t => t.user === currentUser);
+        render(tr);
     });
 }
 
@@ -230,40 +196,34 @@ function render(data) {
     let mapBulan = {};
     let html = "";
 
-    // Sort data terbaru di atas
     data.sort((a,b) => new Date(b.date) - new Date(a.date));
 
     data.forEach(t => {
-        let amt = parseInt(t.amount);
+        let amt = parseInt(t.amount) || 0; // Cegah NaN
         if(t.tipe === "Pengeluaran") {
             out += amt;
             mapKategori[t.category] = (mapKategori[t.category] || 0) + amt;
-            let bulan = t.date.substring(0, 7);
+            let bulan = t.date ? t.date.toString().substring(0, 7) : "0000-00";
             mapBulan[bulan] = (mapBulan[bulan] || 0) + amt;
-        } else {
-            ins += amt;
-        }
+        } else ins += amt;
 
         html += `
-        <div class="flex justify-between items-center p-4 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+        <div class="flex justify-between items-center p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700">
             <div>
-                <div class="text-[10px] font-bold text-blue-500 uppercase tracking-tighter">${t.category}</div>
+                <div class="text-[9px] font-bold text-blue-500 uppercase">${t.category}</div>
                 <div class="text-sm font-semibold">${t.description}</div>
-                <div class="text-[10px] opacity-50">${t.date}</div>
+                <div class="text-[9px] opacity-40">${t.date}</div>
             </div>
             <div class="text-right">
-                <div class="font-bold ${t.tipe === 'Pemasukan' ? 'text-emerald-500' : 'text-slate-700 dark:text-slate-200'}">
-                    ${t.tipe === 'Pemasukan' ? '+' : ''}Rp ${amt.toLocaleString()}
-                </div>
-                <button onclick="hapusTransaksi('${t.id}')" class="text-[9px] text-red-400 font-bold hover:text-red-600 uppercase">Hapus</button>
+                <div class="font-bold ${t.tipe === 'Pemasukan' ? 'text-emerald-500' : ''}">Rp ${amt.toLocaleString()}</div>
+                <button onclick="hapusTransaksi('${t.id}')" class="text-[9px] text-red-400 font-bold uppercase">Hapus</button>
             </div>
         </div>`;
     });
 
     totalOut.innerText = "Rp " + out.toLocaleString();
     totalIn.innerText = "Rp " + ins.toLocaleString();
-
-    // Analisis
+    
     let bulanUrut = Object.keys(mapBulan).sort();
     let avg = 0;
     let last3 = bulanUrut.slice(-3);
@@ -272,44 +232,28 @@ function render(data) {
 
     prediksi.innerText = "Rp " + avg.toLocaleString();
     danaDarurat.innerText = "Rp " + (avg * 12).toLocaleString();
-    riwayat.innerHTML = html || "<p class='text-center text-slate-400 text-xs py-10'>Belum ada transaksi</p>";
+    riwayat.innerHTML = html;
 
     updateCharts(mapKategori, out, ins, bulanUrut, mapBulan);
 }
 
-function updateCharts(mapKategori, out, ins, bulanUrut, mapBulan) {
+function updateCharts(mk, o, i, bu, mb) {
     if(chart1) chart1.destroy();
-    chart1 = new Chart(document.getElementById('chartKategori'), {
-        type: 'doughnut',
-        data: { labels: Object.keys(mapKategori), datasets: [{ data: Object.values(mapKategori), backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'] }] },
-        options: { plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } } }
-    });
+    chart1 = new Chart(chartKategori, { type: 'doughnut', data: { labels: Object.keys(mk), datasets: [{ data: Object.values(mk), backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'] }] } });
 
     if(chart2) chart2.destroy();
-    chart2 = new Chart(document.getElementById('chartVs'), {
-        type: 'bar',
-        data: { labels: ["Out", "In"], datasets: [{ data: [out, ins], backgroundColor: ['#ef4444', '#10b981'] }] },
-        options: { plugins: { legend: { display: false } } }
-    });
+    chart2 = new Chart(chartVs, { type: 'bar', data: { labels: ["Out", "In"], datasets: [{ data: [o, i], backgroundColor: ['#ef4444', '#10b981'] }] } });
 
     if(chart3) chart3.destroy();
-    chart3 = new Chart(document.getElementById('trendChart'), {
-        type: 'line',
-        data: { labels: bulanUrut, datasets: [{ label: "Pengeluaran Bulanan", data: bulanUrut.map(b => mapBulan[b]), borderColor: '#3b82f6', tension: 0.4, fill: true, backgroundColor: 'rgba(59, 130, 246, 0.1)' }] },
-        options: { maintainAspectRatio: false }
-    });
+    chart3 = new Chart(trendChart, { type: 'line', data: { labels: bu, datasets: [{ label: "Pengeluaran", data: bu.map(b => mb[b]), borderColor: '#3b82f6', tension: 0.3 }] } });
 }
 
 function exportPDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    doc.setFontSize(20);
-    doc.text("LAPORAN SMART FINANCE", 10, 20);
-    doc.setFontSize(12);
-    doc.text("User: " + currentUser, 10, 30);
-    doc.text("Total Pengeluaran: " + totalOut.innerText, 10, 40);
-    doc.text("Total Pemasukan: " + totalIn.innerText, 10, 50);
-    doc.save(`SmartFinance_${currentUser}.pdf`);
+    doc.text("Laporan Smart Finance - " + currentUser, 10, 10);
+    doc.text("Total Pengeluaran: " + totalOut.innerText, 10, 20);
+    doc.save("Laporan.pdf");
 }
 </script>
 </body>
