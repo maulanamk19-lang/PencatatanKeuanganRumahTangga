@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Buku Kas Ultimate Secure</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body class="bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-white transition">
+
+<!-- LOGIN -->
+<div id="login" class="flex items-center justify-center h-screen">
+  <div class="bg-white dark:bg-slate-800 p-6 rounded shadow w-80">
+    <h2 class="text-xl font-bold mb-4 text-center">Login</h2>
+
+    <select id="userSelect" class="w-full p-2 border rounded mb-2 text-black">
+      <option value="Maul">Maul</option>
+      <option value="Ninda">Ninda</option>
+    </select>
+
+    <input type="password" id="pinInput" placeholder="PIN"
+    class="w-full p-2 border rounded mb-3 text-black">
+
+    <button onclick="checkLogin()"
+    class="w-full bg-blue-600 text-white p-2 rounded">
+    Masuk
+    </button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" class="hidden max-w-6xl mx-auto p-4">
+
+<div class="flex justify-between items-center mb-4">
+<h1 class="text-2xl font-bold">💰 Buku Kas</h1>
+<div class="flex gap-2">
+<button onclick="toggleDark()" class="px-3 py-1 bg-gray-300 dark:bg-gray-700 rounded">🌙</button>
+<button onclick="logout()" class="px-3 py-1 bg-red-500 text-white rounded">Logout</button>
+</div>
+</div>
+
+<select id="filterMonth" class="p-2 border rounded mb-4"></select>
+
+<div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6 text-sm md:text-base">
+
+<div class="bg-blue-600 text-white p-3 rounded">
+<p>Total</p><p id="totalEl"></p>
+</div>
+
+<div class="bg-green-600 text-white p-3 rounded">
+<p>Rata-rata</p><p id="avgEl"></p>
+</div>
+
+<div class="bg-purple-600 text-white p-3 rounded">
+<p>Prediksi Bulan Depan</p><p id="forecastEl"></p>
+</div>
+
+<div class="bg-orange-600 text-white p-3 rounded">
+<p>Dana Darurat</p><p id="daruratEl"></p>
+</div>
+
+</div>
+
+<div class="bg-white dark:bg-slate-800 p-4 rounded shadow mb-6">
+<canvas id="trendCanvas"></canvas>
+</div>
+
+</div>
+
+<script>
+
+const URL = "YOUR_SCRIPT_URL";
+
+const PIN_HASH = {
+ "Maul":"PASTE_HASH_MAUL",
+ "Ninda":"PASTE_HASH_NINDA"
+};
+
+let currentUser="";
+let transaksi=[];
+let target=[];
+let trendChart;
+
+async function hashInput(pin){
+ const encoder=new TextEncoder();
+ const data=encoder.encode(pin);
+ const hashBuffer=await crypto.subtle.digest("SHA-256",data);
+ return Array.from(new Uint8Array(hashBuffer))
+ .map(b=>b.toString(16).padStart(2,"0")).join("");
+}
+
+async function checkLogin(){
+ let user=userSelect.value;
+ let pin=pinInput.value;
+
+ let hashed=await hashInput(pin);
+
+ if(PIN_HASH[user]===hashed){
+   currentUser=user;
+   login.classList.add("hidden");
+   app.classList.remove("hidden");
+   initMonth();
+   loadData();
+ }else{
+   alert("PIN salah");
+ }
+}
+
+function logout(){
+ location.reload();
+}
+
+function toggleDark(){
+ document.body.classList.toggle("dark");
+}
+
+async function loadData(){
+ let res=await fetch(URL);
+ let json=await res.json();
+ transaksi=json.transaksi.filter(t=>t.user===currentUser);
+ target=json.target.filter(t=>t.user===currentUser);
+ render();
+}
+
+function initMonth(){
+ let now=new Date();
+ for(let i=0;i<12;i++){
+  let d=new Date(now.getFullYear(),now.getMonth()-i,1);
+  let val=d.toISOString().slice(0,7);
+  filterMonth.innerHTML+=`<option value="${val}">${d.toLocaleString("id-ID",{month:"long",year:"numeric"})}</option>`;
+ }
+}
+
+function render(){
+ let month=filterMonth.value;
+ let filtered=transaksi.filter(t=>t.date.startsWith(month));
+
+ let total=filtered.reduce((s,t)=>s+Number(t.amount),0);
+ totalEl.innerText="Rp "+total.toLocaleString("id-ID");
+
+ let days=new Date(month.split("-")[0],month.split("-")[1],0).getDate();
+ avgEl.innerText="Rp "+Math.round(total/days).toLocaleString("id-ID");
+
+ forecastEl.innerText="Rp "+forecastNextMonth().toLocaleString("id-ID");
+
+ renderDanaDarurat();
+ renderTrend();
+}
+
+function forecastNextMonth(){
+ let monthly={};
+ transaksi.forEach(t=>{
+  let m=t.date.slice(0,7);
+  monthly[m]=(monthly[m]||0)+Number(t.amount);
+ });
+
+ let values=Object.values(monthly).slice(-3);
+ if(values.length===0) return 0;
+ return Math.round(values.reduce((a,b)=>a+b)/values.length);
+}
+
+function renderDanaDarurat(){
+ if(!target.length) return;
+ let t=target[0];
+ let persen=Math.round((t.terkumpul/t.dana_darurat_target)*100);
+ daruratEl.innerText=persen+"% tercapai";
+}
+
+function renderTrend(){
+ if(trendChart) trendChart.destroy();
+
+ let monthly={};
+ transaksi.forEach(t=>{
+  let m=t.date.slice(0,7);
+  monthly[m]=(monthly[m]||0)+Number(t.amount);
+ });
+
+ trendChart=new Chart(trendCanvas,{
+  type:"line",
+  data:{
+   labels:Object.keys(monthly),
+   datasets:[{
+    label:"Pengeluaran",
+    data:Object.values(monthly)
+   }]
+  }
+ });
+}
+
+filterMonth.onchange=render;
+
+</script>
+
+</body>
+</html>
