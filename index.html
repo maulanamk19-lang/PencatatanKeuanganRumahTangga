@@ -6,12 +6,11 @@
     <title>Smart Finance - Maul & Ninda</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); }
-        .dark .glass { background: rgba(30, 41, 59, 0.85); }
+        .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.3); }
+        .dark .glass { background: rgba(30, 41, 59, 0.85); border: 1px solid rgba(255, 255, 255, 0.1); }
         .custom-scroll::-webkit-scrollbar { width: 5px; }
         .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     </style>
@@ -19,7 +18,7 @@
 <body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen transition-colors duration-300">
 
 <div id="loginPage" class="flex items-center justify-center h-screen px-4">
-    <div class="glass p-8 rounded-[2rem] shadow-2xl w-full max-w-md border border-white/20">
+    <div class="glass p-8 rounded-[2.5rem] shadow-2xl w-full max-w-md">
         <div class="text-center mb-8">
             <h2 class="text-3xl font-bold">Smart Finance</h2>
             <p class="text-slate-500 text-sm mt-1">Maul & Ninda Financial Hub</p>
@@ -46,19 +45,19 @@
     </div>
 
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <div class="bg-gradient-to-br from-rose-500 to-red-600 text-white p-5 rounded-[1.5rem] shadow-lg">
+        <div class="bg-gradient-to-br from-rose-500 to-red-600 text-white p-5 rounded-3xl shadow-lg">
             <div class="text-[10px] uppercase font-bold opacity-70 mb-1">Pengeluaran</div>
             <div id="totalOut" class="text-xl font-bold">Rp 0</div>
         </div>
-        <div class="bg-gradient-to-br from-emerald-500 to-teal-600 text-white p-5 rounded-[1.5rem] shadow-lg">
+        <div class="bg-gradient-to-br from-emerald-500 to-teal-600 text-white p-5 rounded-3xl shadow-lg">
             <div class="text-[10px] uppercase font-bold opacity-70 mb-1">Pemasukan</div>
             <div id="totalIn" class="text-xl font-bold">Rp 0</div>
         </div>
-        <div class="glass p-5 rounded-[1.5rem] border border-white/20">
+        <div class="glass p-5 rounded-3xl">
             <div class="text-[10px] uppercase font-bold text-slate-400 mb-1">Prediksi 3 Bln</div>
-            <div id="prediksi" class="text-xl font-bold text-blue-600">Rp 0</div>
+            <div id="prediksi" class="text-xl font-bold text-blue-600 text-black dark:text-white">Rp 0</div>
         </div>
-        <div class="glass p-5 rounded-[1.5rem] border border-white/20">
+        <div class="glass p-5 rounded-3xl">
             <div class="text-[10px] uppercase font-bold text-slate-400 mb-1">Dana Darurat</div>
             <div id="danaDarurat" class="text-xl font-bold text-purple-600">Rp 0</div>
         </div>
@@ -66,8 +65,8 @@
 
     <div class="grid lg:grid-cols-3 gap-8">
         <div class="space-y-6">
-            <div class="glass p-6 rounded-[2rem] shadow-sm border border-white/20">
-                <h3 class="font-bold mb-4 flex items-center gap-2">📝 Transaksi Baru</h3>
+            <div class="glass p-6 rounded-[2rem] shadow-sm">
+                <h3 class="font-bold mb-4 flex items-center gap-2 text-black dark:text-white">📝 Transaksi Baru</h3>
                 <div class="space-y-3">
                     <select id="tipe" class="w-full p-3 rounded-xl bg-slate-100 dark:bg-slate-700 border-none text-sm text-black dark:text-white">
                         <option value="Pengeluaran">🔴 Pengeluaran</option>
@@ -76,9 +75,9 @@
                     <input type="date" id="tanggal" class="w-full p-3 rounded-xl bg-slate-100 dark:bg-slate-700 border-none text-sm text-black dark:text-white">
                     <select id="category" class="w-full p-3 rounded-xl bg-slate-100 dark:bg-slate-700 border-none text-sm text-black dark:text-white" required>
                         <option value="">Pilih Kategori</option>
-                        <option value="🏠 Rumah">🏠 Rumah</option>
-                        <option value="🍚 Makan">🍚 Makan</option>
-                        <option value="🚗 Transport">🚗 Transport</option>
+                        <option value="🏠 Kebutuhan Rumah">🏠 Rumah</option>
+                        <option value="🍚 Makan & Minum">🍚 Makan</option>
+                        <option value="🚗 Transportasi">🚗 Transport</option>
                         <option value="🎓 Pendidikan">🎓 Pendidikan</option>
                         <option value="🏥 Kesehatan">🏥 Kesehatan</option>
                         <option value="🛍 Belanja">🛍 Belanja</option>
@@ -87,21 +86,19 @@
                         <option value="📦 Lainnya">📦 Lainnya</option>
                     </select>
                     <input type="text" id="keterangan" placeholder="Keterangan" class="w-full p-3 rounded-xl bg-slate-100 dark:bg-slate-700 border-none text-sm text-black dark:text-white">
-                    <input type="number" id="jumlah" placeholder="Jumlah" class="w-full p-3 rounded-xl bg-slate-100 dark:bg-slate-700 border-none text-sm text-black dark:text-white">
+                    <input type="number" id="jumlah" placeholder="Jumlah (contoh: 6000)" class="w-full p-3 rounded-xl bg-slate-100 dark:bg-slate-700 border-none text-sm text-black dark:text-white">
                     <button id="btnSimpan" onclick="tambahTransaksi()" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl shadow-md hover:bg-blue-700 active:scale-95 transition">Simpan</button>
                 </div>
             </div>
-            <button onclick="exportPDF()" class="w-full glass p-4 rounded-2xl text-sm font-bold border border-white/20 hover:bg-white transition">📄 Download PDF</button>
         </div>
 
         <div class="lg:col-span-2 space-y-8">
             <div class="grid md:grid-cols-2 gap-6">
-                <div class="glass p-6 rounded-[2rem] border border-white/20"><canvas id="chartKategori"></canvas></div>
-                <div class="glass p-6 rounded-[2rem] border border-white/20"><canvas id="chartVs"></canvas></div>
+                <div class="glass p-6 rounded-[2rem] h-64"><canvas id="chartKategori"></canvas></div>
+                <div class="glass p-6 rounded-[2rem] h-64"><canvas id="chartVs"></canvas></div>
             </div>
-            <div class="glass p-6 rounded-[2rem] border border-white/20"><canvas id="trendChart"></canvas></div>
-            <div class="glass p-6 rounded-[2rem] border border-white/20">
-                <h4 class="font-bold mb-4">Riwayat</h4>
+            <div class="glass p-6 rounded-[2rem]">
+                <h4 class="font-bold mb-4 text-black dark:text-white">Riwayat Transaksi</h4>
                 <div id="riwayat" class="space-y-3 max-h-96 overflow-y-auto pr-2 custom-scroll"></div>
             </div>
         </div>
@@ -109,9 +106,10 @@
 </div>
 
 <script>
-const URL = "https://script.google.com/macros/s/AKfycbw5MNn27Fopx3dp7H5nKcGmqK4xDTzS2m53JVEhKzfzn9GPHxuFtgRXClFsHLtgGVug/exec";
+// GANTI DENGAN URL APPS SCRIPT BARU ANDA
+const URL = "https://script.google.com/macros/s/AKfycbzx58MhGnhQrMKr-hQT0NqMb32qSrCMzBNzF9dHiLeg3gaTX2iweJrrsKTbfWOI5fNU/exec";
 let currentUser = "";
-let chart1, chart2, chart3;
+let chart1, chart2;
 
 const PIN_HASH = {
     "Maul": "41c991eb6a66242c0454191244278183ce58cf4a6bcd372f799e4b9cc01886af",
@@ -150,9 +148,9 @@ function logout() { localStorage.removeItem("bk_user"); location.reload(); }
 function toggleDark() { document.body.classList.toggle("dark"); }
 
 async function tambahTransaksi() {
-    const cat = category.value;
-    const desc = keterangan.value;
-    const amt = jumlah.value;
+    const cat = document.getElementById('category').value;
+    const desc = document.getElementById('keterangan').value;
+    const amt = document.getElementById('jumlah').value;
     if(!cat || !desc || !amt) return alert("Lengkapi data!");
 
     btnSimpan.disabled = true;
@@ -164,21 +162,22 @@ async function tambahTransaksi() {
             body: JSON.stringify({
                 action: "add",
                 user: currentUser,
-                tipe: tipe.value,
-                date: tanggal.value,
+                tipe: document.getElementById('tipe').value,
+                date: document.getElementById('tanggal').value,
                 category: cat,
                 description: desc,
-                amount: amt
+                amount: parseInt(amt)
             })
         });
-        keterangan.value = ""; jumlah.value = ""; category.value = "";
+        document.getElementById('keterangan').value = ""; 
+        document.getElementById('jumlah').value = "";
         loadData();
-    } catch(e) { alert("Error!"); }
+    } catch(e) { alert("Error menyimpan!"); }
     finally { btnSimpan.disabled = false; btnSimpan.innerText = "Simpan"; }
 }
 
 async function hapusTransaksi(id) {
-    if(!confirm("Hapus?")) return;
+    if(!confirm("Hapus transaksi ini?")) return;
     await fetch(URL, { method: "POST", body: JSON.stringify({ action: "delete", id: id }) });
     loadData();
 }
@@ -199,7 +198,7 @@ function render(data) {
     data.sort((a,b) => new Date(b.date) - new Date(a.date));
 
     data.forEach(t => {
-        let amt = parseInt(t.amount) || 0; // Cegah NaN
+        let amt = parseInt(t.amount) || 0; 
         if(t.tipe === "Pengeluaran") {
             out += amt;
             mapKategori[t.category] = (mapKategori[t.category] || 0) + amt;
@@ -211,11 +210,11 @@ function render(data) {
         <div class="flex justify-between items-center p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700">
             <div>
                 <div class="text-[9px] font-bold text-blue-500 uppercase">${t.category}</div>
-                <div class="text-sm font-semibold">${t.description}</div>
+                <div class="text-sm font-semibold text-black dark:text-white">${t.description}</div>
                 <div class="text-[9px] opacity-40">${t.date}</div>
             </div>
             <div class="text-right">
-                <div class="font-bold ${t.tipe === 'Pemasukan' ? 'text-emerald-500' : ''}">Rp ${amt.toLocaleString()}</div>
+                <div class="font-bold ${t.tipe === 'Pemasukan' ? 'text-emerald-500' : 'text-black dark:text-white'}">Rp ${amt.toLocaleString()}</div>
                 <button onclick="hapusTransaksi('${t.id}')" class="text-[9px] text-red-400 font-bold uppercase">Hapus</button>
             </div>
         </div>`;
@@ -232,28 +231,25 @@ function render(data) {
 
     prediksi.innerText = "Rp " + avg.toLocaleString();
     danaDarurat.innerText = "Rp " + (avg * 12).toLocaleString();
-    riwayat.innerHTML = html;
+    riwayat.innerHTML = html || "<p class='text-center py-10 opacity-50 text-xs'>Belum ada data</p>";
 
-    updateCharts(mapKategori, out, ins, bulanUrut, mapBulan);
+    updateCharts(mapKategori, out, ins);
 }
 
-function updateCharts(mk, o, i, bu, mb) {
+function updateCharts(mk, o, i) {
     if(chart1) chart1.destroy();
-    chart1 = new Chart(chartKategori, { type: 'doughnut', data: { labels: Object.keys(mk), datasets: [{ data: Object.values(mk), backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'] }] } });
+    chart1 = new Chart(document.getElementById('chartKategori'), { 
+        type: 'doughnut', 
+        data: { labels: Object.keys(mk), datasets: [{ data: Object.values(mk), backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'] }] },
+        options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } } }
+    });
 
     if(chart2) chart2.destroy();
-    chart2 = new Chart(chartVs, { type: 'bar', data: { labels: ["Out", "In"], datasets: [{ data: [o, i], backgroundColor: ['#ef4444', '#10b981'] }] } });
-
-    if(chart3) chart3.destroy();
-    chart3 = new Chart(trendChart, { type: 'line', data: { labels: bu, datasets: [{ label: "Pengeluaran", data: bu.map(b => mb[b]), borderColor: '#3b82f6', tension: 0.3 }] } });
-}
-
-function exportPDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    doc.text("Laporan Smart Finance - " + currentUser, 10, 10);
-    doc.text("Total Pengeluaran: " + totalOut.innerText, 10, 20);
-    doc.save("Laporan.pdf");
+    chart2 = new Chart(document.getElementById('chartVs'), { 
+        type: 'bar', 
+        data: { labels: ["Out", "In"], datasets: [{ data: [o, i], backgroundColor: ['#ef4444', '#10b981'] }] },
+        options: { maintainAspectRatio: false, plugins: { legend: { display: false } } }
+    });
 }
 </script>
 </body>
