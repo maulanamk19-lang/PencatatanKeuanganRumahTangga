@@ -3,103 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Finance - Maul & Ninda</title>
+    <title>Smart Finance Keluarga Maul & Ninda</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.3); }
-        .dark .glass { background: rgba(30, 41, 59, 0.85); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .custom-scroll::-webkit-scrollbar { width: 5px; }
-        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .glass { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); }
     </style>
 </head>
-<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen transition-colors duration-300">
+<body class="bg-slate-50 min-h-screen p-4 md:p-8 text-slate-900">
 
-<div id="loginPage" class="flex items-center justify-center h-screen px-4">
-    <div class="glass p-8 rounded-[2.5rem] shadow-2xl w-full max-w-md">
-        <div class="text-center mb-8">
-            <h2 class="text-3xl font-bold">Smart Finance</h2>
-            <p class="text-slate-500 text-sm mt-1">Maul & Ninda Financial Hub</p>
-        </div>
-        <select id="userSelect" class="w-full p-4 rounded-2xl mb-4 bg-white dark:bg-slate-800 border-none shadow-sm text-black dark:text-white">
+<div id="loginPage" class="flex items-center justify-center h-screen">
+    <div class="bg-white p-8 rounded-[2.5rem] shadow-xl w-full max-w-sm">
+        <h2 class="text-2xl font-bold text-center mb-6">Login Keluarga</h2>
+        <select id="userSelect" class="w-full p-3 border rounded-xl mb-4 bg-slate-50">
             <option value="Maul">Maul</option>
             <option value="Ninda">Ninda</option>
         </select>
-        <input type="password" id="pinInput" placeholder="PIN" class="w-full p-4 rounded-2xl mb-6 bg-white dark:bg-slate-800 border-none shadow-sm text-black dark:text-white text-center tracking-[0.5em]">
-        <button onclick="login()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-2xl transition shadow-lg shadow-blue-500/30">Masuk</button>
+        <input type="password" id="pinInput" placeholder="PIN" class="w-full p-3 border rounded-xl mb-6 text-center tracking-[0.5em] bg-slate-50">
+        <button onclick="login()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 transition">Masuk</button>
     </div>
 </div>
 
-<div id="appPage" class="hidden max-w-6xl mx-auto p-4 md:p-8">
+<div id="appPage" class="hidden max-w-5xl mx-auto">
     <div class="flex justify-between items-center mb-8">
-        <div>
-            <h1 class="text-2xl font-bold opacity-80">Dashboard</h1>
-            <p id="userNameDisplay" class="text-blue-600 font-semibold text-sm"></p>
+        <h1 class="text-2xl font-bold">💰 Smart Finance Keluarga</h1>
+        <button onclick="logout()" class="text-red-500 font-bold text-sm">LOGOUT</button>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div class="bg-emerald-500 text-white p-6 rounded-[2rem] shadow-lg">
+            <p class="text-[10px] uppercase font-bold opacity-80">Total Pemasukan</p>
+            <h2 id="totalIn" class="text-2xl font-bold">Rp 0</h2>
         </div>
-        <div class="flex gap-2">
-            <button onclick="toggleDark()" class="p-3 glass rounded-xl shadow-sm">🌙</button>
-            <button onclick="logout()" class="p-3 bg-red-50 text-red-600 font-bold rounded-xl text-xs uppercase tracking-wider">Logout</button>
+        <div class="bg-rose-500 text-white p-6 rounded-[2rem] shadow-lg">
+            <p class="text-[10px] uppercase font-bold opacity-80">Total Pengeluaran</p>
+            <h2 id="totalOut" class="text-2xl font-bold">Rp 0</h2>
+        </div>
+        <div class="bg-blue-600 text-white p-6 rounded-[2rem] shadow-lg">
+            <p class="text-[10px] uppercase font-bold opacity-80">Sisa Saldo Kas</p>
+            <h2 id="sisaSaldo" class="text-2xl font-bold">Rp 0</h2>
         </div>
     </div>
 
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <div class="bg-gradient-to-br from-rose-500 to-red-600 text-white p-5 rounded-3xl shadow-lg">
-            <div class="text-[10px] uppercase font-bold opacity-70 mb-1">Pengeluaran</div>
-            <div id="totalOut" class="text-xl font-bold">Rp 0</div>
-        </div>
-        <div class="bg-gradient-to-br from-emerald-500 to-teal-600 text-white p-5 rounded-3xl shadow-lg">
-            <div class="text-[10px] uppercase font-bold opacity-70 mb-1">Pemasukan</div>
-            <div id="totalIn" class="text-xl font-bold">Rp 0</div>
-        </div>
-        <div class="glass p-5 rounded-3xl">
-            <div class="text-[10px] uppercase font-bold text-slate-400 mb-1">Prediksi 3 Bln</div>
-            <div id="prediksi" class="text-xl font-bold text-blue-600 text-black dark:text-white">Rp 0</div>
-        </div>
-        <div class="glass p-5 rounded-3xl">
-            <div class="text-[10px] uppercase font-bold text-slate-400 mb-1">Dana Darurat</div>
-            <div id="danaDarurat" class="text-xl font-bold text-purple-600">Rp 0</div>
-        </div>
-    </div>
-
-    <div class="grid lg:grid-cols-3 gap-8">
-        <div class="space-y-6">
-            <div class="glass p-6 rounded-[2rem] shadow-sm">
-                <h3 class="font-bold mb-4 flex items-center gap-2 text-black dark:text-white">📝 Transaksi Baru</h3>
-                <div class="space-y-3">
-                    <select id="tipe" class="w-full p-3 rounded-xl bg-slate-100 dark:bg-slate-700 border-none text-sm text-black dark:text-white">
-                        <option value="Pengeluaran">🔴 Pengeluaran</option>
-                        <option value="Pemasukan">🟢 Pemasukan</option>
-                    </select>
-                    <input type="date" id="tanggal" class="w-full p-3 rounded-xl bg-slate-100 dark:bg-slate-700 border-none text-sm text-black dark:text-white">
-                    <select id="category" class="w-full p-3 rounded-xl bg-slate-100 dark:bg-slate-700 border-none text-sm text-black dark:text-white" required>
-                        <option value="">Pilih Kategori</option>
-                        <option value="🏠 Kebutuhan Rumah">🏠 Rumah</option>
-                        <option value="🍚 Makan & Minum">🍚 Makan</option>
-                        <option value="🚗 Transportasi">🚗 Transport</option>
-                        <option value="🎓 Pendidikan">🎓 Pendidikan</option>
-                        <option value="🏥 Kesehatan">🏥 Kesehatan</option>
-                        <option value="🛍 Belanja">🛍 Belanja</option>
-                        <option value="🎉 Hiburan">🎉 Hiburan</option>
-                        <option value="✨ Sedekah">✨ Sedekah</option>
-                        <option value="📦 Lainnya">📦 Lainnya</option>
-                    </select>
-                    <input type="text" id="keterangan" placeholder="Keterangan" class="w-full p-3 rounded-xl bg-slate-100 dark:bg-slate-700 border-none text-sm text-black dark:text-white">
-                    <input type="number" id="jumlah" placeholder="Jumlah (contoh: 6000)" class="w-full p-3 rounded-xl bg-slate-100 dark:bg-slate-700 border-none text-sm text-black dark:text-white">
-                    <button id="btnSimpan" onclick="tambahTransaksi()" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl shadow-md hover:bg-blue-700 active:scale-95 transition">Simpan</button>
-                </div>
+    <div class="grid md:grid-cols-3 gap-8">
+        <div class="glass p-6 rounded-[2rem] shadow-sm h-fit">
+            <h3 class="font-bold mb-4 text-sm">Tambah Transaksi</h3>
+            <div class="space-y-3">
+                <select id="tipe" class="w-full p-3 bg-slate-100 rounded-xl text-sm border-none" onchange="updateKategori()">
+                    <option value="Pengeluaran">🔴 Pengeluaran</option>
+                    <option value="Pemasukan">🟢 Pemasukan</option>
+                </select>
+                <input type="date" id="tanggal" class="w-full p-3 bg-slate-100 rounded-xl text-sm border-none">
+                <select id="category" class="w-full p-3 bg-slate-100 rounded-xl text-sm border-none"></select>
+                <input type="text" id="keterangan" placeholder="Keterangan" class="w-full p-3 bg-slate-100 rounded-xl text-sm border-none">
+                <input type="number" id="jumlah" placeholder="Jumlah" class="w-full p-3 bg-slate-100 rounded-xl text-sm border-none">
+                <button onclick="tambahTransaksi()" id="btnSimpan" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold text-sm shadow-md">Simpan</button>
             </div>
         </div>
 
-        <div class="lg:col-span-2 space-y-8">
-            <div class="grid md:grid-cols-2 gap-6">
-                <div class="glass p-6 rounded-[2rem] h-64"><canvas id="chartKategori"></canvas></div>
-                <div class="glass p-6 rounded-[2rem] h-64"><canvas id="chartVs"></canvas></div>
-            </div>
-            <div class="glass p-6 rounded-[2rem]">
-                <h4 class="font-bold mb-4 text-black dark:text-white">Riwayat Transaksi</h4>
-                <div id="riwayat" class="space-y-3 max-h-96 overflow-y-auto pr-2 custom-scroll"></div>
+        <div class="md:col-span-2">
+            <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100">
+                <h3 class="font-bold mb-4 text-sm">Riwayat Transaksi Keluarga</h3>
+                <div id="riwayat" class="space-y-4 max-h-[500px] overflow-y-auto pr-2 custom-scroll"></div>
             </div>
         </div>
     </div>
@@ -109,29 +75,14 @@
 // GANTI DENGAN URL APPS SCRIPT BARU ANDA
 const URL = "https://script.google.com/macros/s/AKfycbzx58MhGnhQrMKr-hQT0NqMb32qSrCMzBNzF9dHiLeg3gaTX2iweJrrsKTbfWOI5fNU/exec";
 let currentUser = "";
-let chart1, chart2;
 
 const PIN_HASH = {
     "Maul": "41c991eb6a66242c0454191244278183ce58cf4a6bcd372f799e4b9cc01886af",
     "Ninda": "d54123de468bd42ea00dafbd777f85fe5fa1ff6404d9838c007953c25c92a1c5"
 };
 
-window.onload = function() {
-    const saved = localStorage.getItem("bk_user");
-    if(saved) {
-        currentUser = saved;
-        loginPage.classList.add("hidden");
-        appPage.classList.remove("hidden");
-        userNameDisplay.innerText = "Halo, " + currentUser;
-        loadData();
-    }
-    document.getElementById('tanggal').value = new Date().toISOString().split('T')[0];
-}
-
 async function sha256(text) {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(text);
-    const hash = await crypto.subtle.digest("SHA-256", data);
+    const hash = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
     return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, "0")).join("");
 }
 
@@ -145,111 +96,99 @@ async function login() {
 }
 
 function logout() { localStorage.removeItem("bk_user"); location.reload(); }
-function toggleDark() { document.body.classList.toggle("dark"); }
 
-async function tambahTransaksi() {
-    const cat = document.getElementById('category').value;
-    const desc = document.getElementById('keterangan').value;
-    const amt = document.getElementById('jumlah').value;
-    if(!cat || !desc || !amt) return alert("Lengkapi data!");
-
-    btnSimpan.disabled = true;
-    btnSimpan.innerText = "Saving...";
-
-    try {
-        await fetch(URL, {
-            method: "POST",
-            body: JSON.stringify({
-                action: "add",
-                user: currentUser,
-                tipe: document.getElementById('tipe').value,
-                date: document.getElementById('tanggal').value,
-                category: cat,
-                description: desc,
-                amount: parseInt(amt)
-            })
-        });
-        document.getElementById('keterangan').value = ""; 
-        document.getElementById('jumlah').value = "";
-        loadData();
-    } catch(e) { alert("Error menyimpan!"); }
-    finally { btnSimpan.disabled = false; btnSimpan.innerText = "Simpan"; }
+function updateKategori() {
+    const tipe = document.getElementById('tipe').value;
+    const catSelect = document.getElementById('category');
+    
+    const pengeluaranOpt = `
+        <option value="🏠 Rumah">🏠 Rumah</option>
+        <option value="🍚 Makan">🍚 Makan</option>
+        <option value="🚗 Transport">🚗 Transport</option>
+        <option value="✨ Sedekah">✨ Sedekah</option>
+        <option value="🛍 Belanja">🛍 Belanja</option>
+        <option value="📦 Lainnya">📦 Lainnya</option>`;
+    
+    const pemasukanOpt = `
+        <option value="💰 Gaji">💰 Gaji Utama</option>
+        <option value="👞 Usaha Sampingan">👞 Usaha (Sol Sepatu)</option>
+        <option value="🎁 Bonus">🎁 Bonus/Hadiah</option>
+        <option value="🔄 Refund">🔄 Refund/Kembalian</option>
+        <option value="➕ Lain-lain">➕ Lain-lain</option>`;
+    
+    catSelect.innerHTML = tipe === "Pengeluaran" ? pengeluaranOpt : pemasukanOpt;
 }
 
-async function hapusTransaksi(id) {
-    if(!confirm("Hapus transaksi ini?")) return;
-    await fetch(URL, { method: "POST", body: JSON.stringify({ action: "delete", id: id }) });
+async function tambahTransaksi() {
+    const amt = document.getElementById('jumlah').value;
+    if(!amt) return alert("Isi jumlah!");
+    btnSimpan.innerText = "Menyimpan...";
+    await fetch(URL, {
+        method: "POST",
+        body: JSON.stringify({
+            action: "add",
+            user: currentUser,
+            tipe: tipe.value,
+            date: tanggal.value,
+            category: category.value,
+            description: keterangan.value,
+            amount: parseInt(amt)
+        })
+    });
     loadData();
+    document.getElementById('jumlah').value = "";
+    document.getElementById('keterangan').value = "";
+    btnSimpan.innerText = "Simpan";
 }
 
 function loadData() {
     fetch(URL).then(r => r.json()).then(data => {
-        const tr = data.transaksi.filter(t => t.user === currentUser);
-        render(tr);
+        let out = 0, ins = 0, html = "";
+        data.transaksi.sort((a,b) => new Date(b.date) - new Date(a.date)).forEach(t => {
+            let amt = parseInt(t.amount) || 0;
+            if(t.tipe === "Pengeluaran") out += amt; else ins += amt;
+
+            html += `
+            <div class="flex justify-between items-center p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[9px] font-bold text-blue-600 uppercase">${t.category}</span>
+                        <span class="text-[8px] px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full font-bold uppercase">${t.user}</span>
+                    </div>
+                    <div class="text-sm font-semibold text-slate-700">${t.description}</div>
+                    <div class="text-[9px] text-slate-400">${t.date}</div>
+                </div>
+                <div class="text-right">
+                    <div class="font-bold text-sm ${t.tipe === 'Pemasukan' ? 'text-emerald-600' : 'text-slate-800'}">
+                        ${t.tipe === 'Pemasukan' ? '+' : ''}Rp ${amt.toLocaleString('id-ID')}
+                    </div>
+                    <button onclick="hapusTransaksi('${t.id}')" class="text-[8px] text-red-400 font-bold uppercase hover:text-red-600 transition">Hapus</button>
+                </div>
+            </div>`;
+        });
+        totalOut.innerText = "Rp " + out.toLocaleString('id-ID');
+        totalIn.innerText = "Rp " + ins.toLocaleString('id-ID');
+        sisaSaldo.innerText = "Rp " + (ins - out).toLocaleString('id-ID');
+        riwayat.innerHTML = html || "<p class='text-center text-xs opacity-50 py-10'>Belum ada transaksi</p>";
     });
 }
 
-function render(data) {
-    let out = 0, ins = 0;
-    let mapKategori = {};
-    let mapBulan = {};
-    let html = "";
-
-    data.sort((a,b) => new Date(b.date) - new Date(a.date));
-
-    data.forEach(t => {
-        let amt = parseInt(t.amount) || 0; 
-        if(t.tipe === "Pengeluaran") {
-            out += amt;
-            mapKategori[t.category] = (mapKategori[t.category] || 0) + amt;
-            let bulan = t.date ? t.date.toString().substring(0, 7) : "0000-00";
-            mapBulan[bulan] = (mapBulan[bulan] || 0) + amt;
-        } else ins += amt;
-
-        html += `
-        <div class="flex justify-between items-center p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700">
-            <div>
-                <div class="text-[9px] font-bold text-blue-500 uppercase">${t.category}</div>
-                <div class="text-sm font-semibold text-black dark:text-white">${t.description}</div>
-                <div class="text-[9px] opacity-40">${t.date}</div>
-            </div>
-            <div class="text-right">
-                <div class="font-bold ${t.tipe === 'Pemasukan' ? 'text-emerald-500' : 'text-black dark:text-white'}">Rp ${amt.toLocaleString()}</div>
-                <button onclick="hapusTransaksi('${t.id}')" class="text-[9px] text-red-400 font-bold uppercase">Hapus</button>
-            </div>
-        </div>`;
-    });
-
-    totalOut.innerText = "Rp " + out.toLocaleString();
-    totalIn.innerText = "Rp " + ins.toLocaleString();
-    
-    let bulanUrut = Object.keys(mapBulan).sort();
-    let avg = 0;
-    let last3 = bulanUrut.slice(-3);
-    last3.forEach(b => avg += mapBulan[b]);
-    avg = last3.length ? Math.round(avg/last3.length) : 0;
-
-    prediksi.innerText = "Rp " + avg.toLocaleString();
-    danaDarurat.innerText = "Rp " + (avg * 12).toLocaleString();
-    riwayat.innerHTML = html || "<p class='text-center py-10 opacity-50 text-xs'>Belum ada data</p>";
-
-    updateCharts(mapKategori, out, ins);
+async function hapusTransaksi(id) {
+    if(!confirm("Hapus transaksi?")) return;
+    await fetch(URL, { method: "POST", body: JSON.stringify({ action: "delete", id: id }) });
+    loadData();
 }
 
-function updateCharts(mk, o, i) {
-    if(chart1) chart1.destroy();
-    chart1 = new Chart(document.getElementById('chartKategori'), { 
-        type: 'doughnut', 
-        data: { labels: Object.keys(mk), datasets: [{ data: Object.values(mk), backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'] }] },
-        options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } } }
-    });
-
-    if(chart2) chart2.destroy();
-    chart2 = new Chart(document.getElementById('chartVs'), { 
-        type: 'bar', 
-        data: { labels: ["Out", "In"], datasets: [{ data: [o, i], backgroundColor: ['#ef4444', '#10b981'] }] },
-        options: { maintainAspectRatio: false, plugins: { legend: { display: false } } }
-    });
+window.onload = function() {
+    const saved = localStorage.getItem("bk_user");
+    if(saved) {
+        currentUser = saved;
+        loginPage.classList.add("hidden");
+        appPage.classList.remove("hidden");
+        updateKategori();
+        loadData();
+    }
+    document.getElementById('tanggal').value = new Date().toISOString().split('T')[0];
 }
 </script>
 </body>
